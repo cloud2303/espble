@@ -474,7 +474,7 @@ export default function BLEComponent() {
     );
   };
   return (
-    <ScrollView nestedScrollEnabled={true}>
+    <View>
       <Button title="连接蓝牙" onPress={startScan} />
       <Text>{isScanning ? 'Scanning...' : 'Scan Bluetooth Devices'}</Text>
 
@@ -496,8 +496,14 @@ export default function BLEComponent() {
             return;
           }
           try {
-            let res = await BleManager.requestMTU(connectedInfo.deviceId, 512);
-            console.log(res);
+            //安卓需要先请求MTU
+            if (Platform.OS === 'android') {
+              let res = await BleManager.requestMTU(
+                connectedInfo.deviceId,
+                512,
+              );
+              console.log(res);
+            }
             await BleManager.writeWithoutResponse(
               connectedInfo.deviceId,
               connectedInfo.writeServiceId,
@@ -527,7 +533,7 @@ export default function BLEComponent() {
           />
         </View>
       ) : null}
-    </ScrollView>
+    </View>
   );
 }
 const boxShadow = {
